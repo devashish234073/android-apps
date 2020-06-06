@@ -18,7 +18,9 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -26,11 +28,30 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth = null;
     private Hashtable<Integer,String> ticTacIds = new Hashtable<Integer,String>();
     private TicTacToe ticTacToe = null;
+    private ArrayList<Integer> ticTacIndexes = new ArrayList<Integer>();
+
+    private int xW = 0;
+    private int oW = 0;
+    private int totalW = 0;
+
+    private boolean toastEnabled = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+    }
+
+    public void updateWinLabels(){
+        TextView xWin = (TextView) findViewById(R.id.xWin);
+        TextView oWin = (TextView) findViewById(R.id.oWin);
+        TextView totalGames = (TextView) findViewById(R.id.totalGames);
+        setTextFromAnotherThread(xWin,"X: " + xW);
+        setTextFromAnotherThread(oWin,"O: " + oW);
+        setTextFromAnotherThread(totalGames,"T: " + totalW);
+        /*xWin.setText("X: " + xW);
+        oWin.setText("O: " + oW);
+        totalGames.setText("T: " + totalW);*/
     }
 
     private void updateUserLabel(){
@@ -76,31 +97,118 @@ public class MainActivity extends AppCompatActivity {
         ticTacIds.put(R.id.a31,"31");
         ticTacIds.put(R.id.a32,"32");
         ticTacIds.put(R.id.a33,"33");
+
+        for(Integer id : ticTacIds.keySet()) {
+            ticTacIndexes.add(id);
+        }
     }
 
     public void resetTicTacToe(View view) {
         ticTacToe = null;
         for(int id : ticTacIds.keySet()){
             TextView tv = (TextView) findViewById(id);
-            tv.animate().rotation(0f).setDuration(200);
-            tv.setBackgroundColor(Color.rgb(14,100,196));
-            tv.setText("");
+            //tv.animate().rotation(0f).setDuration(200);
+            //tv.setBackgroundColor(Color.rgb(14,100,196));
+            rotateFromAnotherThread(tv,0f,200);
+            setBackgroundFromAnotherThread(tv,14,100,196);
+            setTextFromAnotherThread(tv,"");
         }
     }
 
     private void longToast(String message){
-        Toast.makeText(MainActivity.this,message,Toast.LENGTH_LONG).show();
+        if(toastEnabled) {
+            Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show();
+        }
     }
 
     private void shortToast(String message){
-        Toast.makeText(MainActivity.this,message,Toast.LENGTH_SHORT).show();
+        if(toastEnabled) {
+            Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void rotateFromAnotherThread(final TextView view,final float angle,final int duration) {
+        synchronized(view){
+            try {
+                view.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        view.animate().rotation(angle).setDuration(duration);
+                    }
+                });
+            } catch (Exception e) {
+
+            }
+        }
+    }
+
+    private void setTextFromAnotherThread(final TextView view,final String txt) {
+        synchronized(view){
+            try {
+                view.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        view.setText(txt);
+                    }
+                });
+            } catch(Exception e) {
+
+            }
+        }
+    }
+
+    private void setBackgroundFromAnotherThread(final View view,final int r,final int g,final int b){
+        synchronized (view){
+            try {
+                view.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        view.setBackgroundColor(Color.rgb(r,g,b));
+                    }
+                });
+            } catch(Exception e) {
+
+            }
+        }
+    }
+
+    public void autoPlay(final View view){
+        longToast("will play 10 times");
+        toastEnabled = false;
+        Thread t = new Thread(new Runnable(){
+            public void run(){
+                for(int i=0;i<10;i++){
+                    resetTicTacToe(view);
+                    ArrayList<Integer> idList = (ArrayList<Integer>)ticTacIndexes.clone();
+                    Random r = new Random();
+                    int selectedIndex = r.nextInt(idList.size());
+                    TextView tttLabel = (TextView) findViewById(idList.get(selectedIndex));
+                    plyTicTacToe(tttLabel);
+                    idList.remove(selectedIndex);
+                    while (!ticTacToe.isGameOver()){
+                        selectedIndex = r.nextInt(idList.size());
+                        tttLabel = (TextView) findViewById(idList.get(selectedIndex));
+                        plyTicTacToe(tttLabel);
+                        idList.remove(selectedIndex);
+                        try {
+                            Thread.sleep(200);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+                toastEnabled = true;
+            }
+        });
+        t.start();
     }
 
     public void plyTicTacToe(View view){
         TextView tv = (TextView) view;
         String coordinate = ticTacIds.get(tv.getId());
         try {
-            tv.animate().rotation(360.0f).setDuration(200);
+            //tv.animate().rotation(360.0f).setDuration(200);
+            rotateFromAnotherThread(tv,360.0f,200);
             if (ticTacToe == null) {
                 ticTacToe = new TicTacToe();
             } else if (ticTacToe.isGameOver()) {
@@ -109,23 +217,37 @@ public class MainActivity extends AppCompatActivity {
             }
             char charPlayed = ticTacToe.playAt(coordinate);
             if (charPlayed != 'T') {
-                tv.setText(charPlayed + "");
+                //tv.setText(charPlayed + "");
+                setTextFromAnotherThread(tv,charPlayed + "");
             }
             if(ticTacToe.getPlayerWon()!=null){
                 String[] patternMatched = ticTacToe.getPatternMatched();
                 for(int id: ticTacIds.keySet()){
                     if(ticTacIds.get(id).equals(patternMatched[0])){
                         TextView tv1tmp = (TextView) findViewById(id);
-                        tv1tmp.setBackgroundColor(Color.rgb(0,255,0));
+                        //tv1tmp.setBackgroundColor(Color.rgb(0,255,0));
+                        setBackgroundFromAnotherThread(tv1tmp,0,255,0);
                     } else if(ticTacIds.get(id).equals(patternMatched[1])){
                         TextView tv1tmp = (TextView) findViewById(id);
-                        tv1tmp.setBackgroundColor(Color.rgb(0,255,0));
+                        //tv1tmp.setBackgroundColor(Color.rgb(0,255,0));
+                        setBackgroundFromAnotherThread(tv1tmp,0,255,0);
                     } else if(ticTacIds.get(id).equals(patternMatched[2])){
                         TextView tv1tmp = (TextView) findViewById(id);
-                        tv1tmp.setBackgroundColor(Color.rgb(0,255,0));
+                        //tv1tmp.setBackgroundColor(Color.rgb(0,255,0));
+                        setBackgroundFromAnotherThread(tv1tmp,0,255,0);
                     }
                 }
+                if(ticTacToe.getPlayerWon()=='X'){
+                    xW++;
+                } else if(ticTacToe.getPlayerWon()=='O'){
+                    oW++;
+                }
                 longToast("player "+ticTacToe.getPlayerWon()+" won");
+                updateWinLabels();
+            }
+            if(ticTacToe.isGameOver()){
+                totalW++;
+                updateWinLabels();
             }
         } catch(Exception e){
             longToast(e.toString());
