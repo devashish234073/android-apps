@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -39,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
 
     HashMap<String,String> initPos = new HashMap<String,String>();
 
+    private HashMap<String,Integer> txtIdMap = new HashMap<String,Integer>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,25 +51,39 @@ public class MainActivity extends AppCompatActivity {
         r1 = (TextView) findViewById(R.id.red1);
         r2 = (TextView) findViewById(R.id.red2);
         r3 = (TextView) findViewById(R.id.red3);
+        txtIdMap.put("r0",R.id.red0);
+        txtIdMap.put("r1",R.id.red1);
+        txtIdMap.put("r2",R.id.red2);
+        txtIdMap.put("r3",R.id.red3);
 
         g0 = (TextView) findViewById(R.id.green0);
         g1 = (TextView) findViewById(R.id.green1);
         g2 = (TextView) findViewById(R.id.green2);
         g3 = (TextView) findViewById(R.id.green3);
+        txtIdMap.put("g0",R.id.green0);
+        txtIdMap.put("g1",R.id.green1);
+        txtIdMap.put("g2",R.id.green2);
+        txtIdMap.put("g3",R.id.green3);
 
         b0 = (TextView) findViewById(R.id.blue0);
         b1 = (TextView) findViewById(R.id.blue1);
         b2 = (TextView) findViewById(R.id.blue2);
         b3 = (TextView) findViewById(R.id.blue3);
+        txtIdMap.put("b0",R.id.blue0);
+        txtIdMap.put("b1",R.id.blue1);
+        txtIdMap.put("b2",R.id.blue2);
+        txtIdMap.put("b3",R.id.blue3);
 
         y0 = (TextView) findViewById(R.id.yellow0);
         y1 = (TextView) findViewById(R.id.yellow1);
         y2 = (TextView) findViewById(R.id.yellow2);
         y3 = (TextView) findViewById(R.id.yellow3);
+        txtIdMap.put("y0",R.id.yellow0);
+        txtIdMap.put("y1",R.id.yellow1);
+        txtIdMap.put("y2",R.id.yellow2);
+        txtIdMap.put("y3",R.id.yellow3);
 
         int DURATION = 800;
-
-
 
         r0.animate().translationX(-250).setDuration(DURATION);
         r0.animate().translationY(-250).setDuration(DURATION);
@@ -301,9 +318,6 @@ public class MainActivity extends AppCompatActivity {
         diceRolled = false;
     }
 
-    HashMap<String,Integer> playerPos = new HashMap<String,Integer>();
-    HashMap<String,Player> playerPos2 = new HashMap<String,Player>();
-
     public void takeTurn(View view){
         if(game==null){
             longMsg("Game not yet started. Please start game first.");
@@ -318,27 +332,26 @@ public class MainActivity extends AppCompatActivity {
                 TextView dice = (TextView) findViewById(R.id.dice);
                 int diceVal = Integer.parseInt(dice.getText().toString());
                 String newPos = whoseTurn.movePlayerBy(Integer.parseInt(((TextView) view).getText().charAt(1)+""),diceVal);
+                String playerAlreadyAtNewLocation = null;
                 if(whoseTurn.isStepUsed()){
-                    //longMsg("new Position is :"+newPos);
                     if(whoseTurn.needToMove()) {
-                        if(playerPos.get(newPos)!=null){
-                            TextView previousPlayerOnSamePos = (TextView) findViewById(playerPos.get(newPos));
-                            Player oldPlayer = playerPos2.get(newPos);
-                            if(!whoseTurn.getColor().equals(oldPlayer.getColor())){
-                                String coor0 = initPos.get(previousPlayerOnSamePos.getText().toString());
-                                String[] coor0Split = coor0.split(",");
-                                int xVal = Integer.parseInt(coor0Split[0]);
-                                int yVal = Integer.parseInt(coor0Split[1]);
-                                translateView(previousPlayerOnSamePos, xVal, yVal);
-                                oldPlayer.returnPlayerToBase(previousPlayerOnSamePos.getText().toString());
-                            }
+                        playerAlreadyAtNewLocation = game.cutPlayerAt(whoseTurn.getColor(),newPos);
+                        if(playerAlreadyAtNewLocation!=null){
+                            TextView previousPlayerOnSamePos = (TextView) findViewById(txtIdMap.get(playerAlreadyAtNewLocation));
+                            String coor0 = initPos.get(playerAlreadyAtNewLocation);
+                            String[] coor0Split = coor0.split(",");
+                            int xVal = Integer.parseInt(coor0Split[0]);
+                            int yVal = Integer.parseInt(coor0Split[1]);
+                            translateView(previousPlayerOnSamePos, xVal, yVal);
                         }
-                        playerPos.put(newPos,subplayer.getId());
-                        playerPos2.put(newPos,whoseTurn);
                         translateView(subplayer, Coordinates.getX(newPos), Coordinates.getY(newPos));
                     }
                     if(diceVal==6){
-                        longMsg("second move for "+whoseTurn.getColor());
+                        longMsg("second move for "+whoseTurn.getColor()+" for getting a 6.");
+                        rollLocked = false;
+                        diceRolled = false;
+                    } else if(playerAlreadyAtNewLocation!=null){
+                        longMsg("second move for "+whoseTurn.getColor()+" for cutting another player.");
                         rollLocked = false;
                         diceRolled = false;
                     } else {

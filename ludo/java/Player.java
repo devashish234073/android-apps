@@ -14,6 +14,19 @@ public class Player {
     boolean stepused = true;
     boolean needToMove = false;
 
+    public String getSubPlayerIndex(int indx){
+        return color_char+indx;
+    }
+
+    public String[] getPositionsStr() {
+        String[] pos = new String[4];
+        pos[0] = subPlayerPosition[0];
+        pos[1] = subPlayerPosition[1];
+        pos[2] = subPlayerPosition[2];
+        pos[3] = subPlayerPosition[3];
+        return pos;
+    }
+
     public int[] getPositions(){
         int[] pos = new int[5];
         pos[0] = path.indexOf(subPlayerPosition[0]);

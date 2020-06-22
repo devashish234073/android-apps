@@ -2,6 +2,7 @@ package com.devashish.ludo;
 
 
 import android.graphics.Color;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,6 +13,21 @@ public class Game {
     private ArrayList<Player.COLR> colorSequence = new ArrayList<Player.COLR>();
     private int currentPlayerIndex;
     private String error = "";
+
+    public String cutPlayerAt(String color,String posTxt){
+        for(Player.COLR colr : players.keySet()){
+            Player p = players.get(colr);
+            String[] pos = p.getPositionsStr();
+            for(int i=0;i<pos.length;i++){
+                if (pos[i].equals(posTxt) && !color.equals(p.getColor())) {//only unlike color can cut each other
+                    String playerStrIndex = p.getSubPlayerIndex(i);
+                    p.returnPlayerToBase(playerStrIndex);
+                    return playerStrIndex;
+                }
+            }
+        }
+        return null;
+    }
 
     public Game(ArrayList<Player.COLR> col){
         if(col.size()<=4){
