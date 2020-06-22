@@ -1,88 +1,120 @@
 package com.devashish.ludo;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 
 public class Player {
     enum COLR{GREEN,RED,BLUE,YELLOW};
     private COLR colr;
-    private char col_char = '\0';
-    private static ArrayList<String> default_sequence = new ArrayList<String>();
-    private ArrayList<String> sequence = new ArrayList<String>();
-    private ArrayList<String> path;
-    private int playerPos[] = {0,0,0,0};
-    private int stepsWon = 0;
+    private ArrayList<String> path = null;
+    private String color_char = "";
+    private String[] subPlayerPosition = {"0","0","0","0"};
+    private ArrayList<String> pathSequence = new ArrayList<String>();
+    boolean stepused = true;
+    boolean needToMove = false;
 
-    static {
-        default_sequence.add("r");
-        default_sequence.add("g");
-        default_sequence.add("y");
-        default_sequence.add("b");
+    public int[] getPositions(){
+        int[] pos = new int[5];
+        pos[0] = path.indexOf(subPlayerPosition[0]);
+        pos[1] = path.indexOf(subPlayerPosition[1]);
+        pos[2] = path.indexOf(subPlayerPosition[2]);
+        pos[3] = path.indexOf(subPlayerPosition[3]);
+        pos[4] = path.size();
+        return pos;
     }
+
+    public void returnPlayerToBase(String playerId){
+        int indx = Integer.parseInt(playerId.charAt(1)+"");
+        subPlayerPosition[indx] = "0";
+    }
+
 
     public Player(COLR colr){
         this.colr = colr;
-        if(this.colr==COLR.GREEN){
-            col_char = 'g';
-        } else if(this.colr==COLR.RED){
-            col_char = 'r';
-        } else if(this.colr==COLR.BLUE){
-            col_char = 'b';
-        } else if(this.colr==COLR.YELLOW){
-            col_char = 'y';
+        path = new ArrayList<String>();
+        color_char = colr.name().toLowerCase().charAt(0)+"";
+        pathSequence.add("r");
+        pathSequence.add("g");
+        pathSequence.add("y");
+        pathSequence.add("b");
+        computePath();
+        Log.d(colr.name().toLowerCase()+"'s init","Col="+colr.name()+",char At 0:"+colr.name().toLowerCase().charAt(0)+",computed="+color_char+",path:"+path);
+    }
+
+    public boolean isStepUsed(){
+        return stepused;
+    }
+
+    public boolean needToMove(){
+        return needToMove;
+    }
+
+    public boolean isAnyPlayerOut() {
+        if(subPlayerPosition[0].equals("0") && subPlayerPosition[1].equals("0") && subPlayerPosition[2].equals("0") && subPlayerPosition[3].equals("0")){
+            return false;
         }
-        computeSequenceAndPath();
+        return true;
     }
 
-    public COLR getColor(){
-        return colr;
-    }
-
-    private String playPlayer(int playerNum,int steps){
-        this.stepsWon = steps;
-        if(playerNum<4 && playerNum>=0){
-            if(playerPos[playerNum]!=path.size()-1){
-                if(playerPos[playerNum]==0 && steps==6){
-                    playerPos[playerNum] = 1;
-                    this.stepsWon = 0;
+    public String movePlayerBy(int subPlayerIndex,int steps){
+        stepused = false;
+        needToMove = false;
+        if(subPlayerPosition[0].equals("0") && subPlayerPosition[1].equals("0") && subPlayerPosition[2].equals("0") && subPlayerPosition[3].equals("0") && steps!=6){
+            stepused = true;
+            return subPlayerPosition[subPlayerIndex];
+        }
+        if(subPlayerPosition[subPlayerIndex].equals("0") && steps!=6){
+            return subPlayerPosition[subPlayerIndex];
+        }
+        int playerPositionIndex = path.indexOf(subPlayerPosition[subPlayerIndex]);
+        if(subPlayerIndex<4 && subPlayerIndex>=0){
+            if(subPlayerPosition[subPlayerIndex]!=path.get(path.size()-1)){
+                if(subPlayerPosition[subPlayerIndex].equals("0") && steps==6){
+                    subPlayerPosition[subPlayerIndex] = path.get(0);
+                    stepused = true;
+                    needToMove = true;
+                    Log.d("Player "+colr.name(),"moved 6 , new position: "+path.get(0));
+                    return path.get(0);
                 } else {
-                    if(steps<=6 && steps>0 && playerPos[playerNum]+steps<path.size()){
-                        playerPos[playerNum]+=steps;
-                        this.stepsWon = 0;
+                    if(steps<=6 && steps>0 && playerPositionIndex+steps<path.size()){
+                        playerPositionIndex+=steps;
+                        subPlayerPosition[subPlayerIndex] = path.get(playerPositionIndex);
+                        stepused = true;
+                        needToMove = true;
+                        Log.d("Player "+colr.name(),"moved "+steps+", new position: "+path.get(playerPositionIndex));
+                        return path.get(playerPositionIndex);
                     }
                 }
             }
         }
-        return path.get(playerPos[playerNum]);
+        return subPlayerPosition[subPlayerIndex];
     }
 
-    public boolean areStepsWonUsed(){
-        return this.stepsWon == 0;
+    public String getColor(){
+        return colr.name();
     }
 
-    private void computeSequenceAndPath() {
-        if(sequence.size()==0){
-            int startPos = default_sequence.indexOf(col_char);
-            for(int i=0;i<=3;i++){
-                int currPos = (startPos + i) % 4;
-                sequence.add(default_sequence.get(currPos));
+    private void computePath() {
+        Log.d("COMPUTE: "+colr.name(),"color_char="+color_char+",appending to 0"+(color_char+"0"));
+        int colIndx = pathSequence.indexOf(color_char);
+        int iterationCount = 0;
+        for(String c = color_char;iterationCount<4;c=pathSequence.get(colIndx%4)){
+            iterationCount++;
+            int MAX = 12;
+            if(iterationCount==4){
+                MAX = 11;
             }
-            path = new ArrayList<String>();
-            path.add("");
-            for(int i=0;i<sequence.size();i++){
-                String currChar = sequence.get(i);
-                int MAX = 11;
-                if(i==sequence.size()-1){
-                    MAX = 10;
-                }
-                for(int j=0;j<=MAX;j++){
-                    path.add(currChar+j);
-                }
+            for(int i=0;i<=MAX;i++) {
+                path.add(c+""+i);
             }
-            path.add((col_char+"").toUpperCase()+1);
-            path.add((col_char+"").toUpperCase()+2);
-            path.add((col_char+"").toUpperCase()+3);
-            path.add((col_char+"").toUpperCase()+4);
-            path.add((col_char+"").toUpperCase()+"_WON");
+            colIndx=colIndx+1;
         }
+        path.add(color_char.toUpperCase()+"1");
+        path.add(color_char.toUpperCase()+"2");
+        path.add(color_char.toUpperCase()+"3");
+        path.add(color_char.toUpperCase()+"4");
+        path.add(color_char.toUpperCase()+"_WIN");
     }
+
 }

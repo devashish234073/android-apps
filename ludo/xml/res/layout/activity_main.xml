@@ -18,86 +18,370 @@
         app:layout_constraintVertical_bias="0.044"
         app:srcCompat="@drawable/ludo" />
 
-    <Button
-        android:id="@+id/up"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:onClick="moveUp"
-        android:text="Up"
+    <CheckBox
+        android:id="@+id/yellowPlaying"
+        android:layout_width="30dp"
+        android:layout_height="20dp"
+        android:layout_marginBottom="172dp"
+        app:layout_constraintBottom_toTopOf="@+id/bluePlaying"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.773"
+        app:layout_constraintHorizontal_bias="0.706"
+        app:layout_constraintStart_toEndOf="@+id/greenPlaying"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.825" />
+
+    <CheckBox
+        android:id="@+id/greenPlaying"
+        android:layout_width="30dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="68dp"
+        android:layout_marginTop="80dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/testBox" />
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/down"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:onClick="moveDown"
-        android:text="down"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.773"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/right" />
-
-    <Button
-        android:id="@+id/right"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:onClick="moveRight"
-        android:text="Right"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.859"
-        app:layout_constraintStart_toEndOf="@+id/left"
-        app:layout_constraintTop_toBottomOf="@+id/up" />
-
-    <Button
-        android:id="@+id/left"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="196dp"
-        android:onClick="moveLeft"
-        android:text="Left"
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="332dp"
+        android:layout_height="223dp"
+        android:layout_marginBottom="16dp"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/testBox"
-        app:layout_constraintVertical_bias="0.227" />
-
-    <TextView
-        android:id="@+id/coor"
-        android:layout_width="175dp"
-        android:layout_height="33dp"
-        android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.911"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/down" />
+        app:layout_constraintStart_toStartOf="parent">
+
+        <LinearLayout
+            android:layout_width="236dp"
+            android:layout_height="210dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/dice"
+                android:layout_width="match_parent"
+                android:layout_height="155dp"
+                android:paddingLeft="70dp"
+                android:text="1"
+                android:onClick="rollDice"
+                android:textSize="120sp" />
+
+            <Button
+                android:id="@+id/start"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="startGame"
+                android:text="Start" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="102dp"
+            android:id="@+id/calibrationLayout"
+            android:layout_height="213dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/coor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/up"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:onClick="moveUp"
+                android:text="Up"
+                android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/left"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:onClick="moveLeft"
+                android:text="Left"
+                android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/right"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:onClick="moveRight"
+                android:text="Right"
+                android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/down"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:onClick="moveDown"
+                android:text="Down"
+                android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/calibrate"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:onClick="calibrate"
+                android:text="Calibrate"
+                android:textSize="12sp" />
+        </LinearLayout>
+    </LinearLayout>
 
     <TextView
         android:id="@+id/testBox"
-        android:layout_width="18dp"
+        android:layout_width="15dp"
         android:layout_height="16dp"
-        android:background="#FF0000"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:background="#141E50"
+        android:text=""
         android:textColor="#FFFFFF"
-        app:layout_constraintHorizontal_bias="0.722"
+        android:textSize="10sp"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
-    <Button
-        android:id="@+id/button"
-        android:layout_width="178dp"
-        android:layout_height="39dp"
-        android:onClick="calibrate"
-        android:text="Calibrate"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <!-- BLUE -->
+    <TextView
+        android:id="@+id/blue0"
+        android:layout_width="15dp"
+        android:layout_height="16dp"
+        android:background="#141E50"
+        android:text="b0"
+        android:textColor="#FFFFFF"
+        android:textSize="10sp"
+        android:onClick="takeTurn"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.931"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/coor"
-        app:layout_constraintVertical_bias="0.126" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+    <TextView
+        android:id="@+id/blue1"
+        android:layout_width="15dp"
+        android:layout_height="16dp"
+        android:background="#141E50"
+        android:text="b1"
+        android:textColor="#FFFFFF"
+        android:textSize="10sp"
+        android:onClick="takeTurn"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+    <TextView
+        android:id="@+id/blue2"
+        android:layout_width="15dp"
+        android:layout_height="16dp"
+        android:background="#141E50"
+        android:text="b2"
+        android:textColor="#FFFFFF"
+        android:textSize="10sp"
+        android:onClick="takeTurn"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+    <TextView
+        android:id="@+id/blue3"
+        android:layout_width="15dp"
+        android:layout_height="16dp"
+        android:background="#141E50"
+        android:text="b3"
+        android:textColor="#FFFFFF"
+        android:textSize="10sp"
+        android:onClick="takeTurn"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+    <!-- RED -->
+    <TextView
+        android:id="@+id/red0"
+        android:layout_width="15dp"
+        android:layout_height="16dp"
+        android:background="#990000"
+        android:text="r0"
+        android:textColor="#FFFFFF"
+        android:textSize="10sp"
+        android:onClick="takeTurn"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+    <TextView
+        android:id="@+id/red1"
+        android:layout_width="15dp"
+        android:layout_height="16dp"
+        android:background="#990000"
+        android:text="r1"
+        android:textColor="#FFFFFF"
+        android:textSize="10sp"
+        android:onClick="takeTurn"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+    <TextView
+        android:id="@+id/red2"
+        android:layout_width="15dp"
+        android:layout_height="16dp"
+        android:background="#990000"
+        android:text="r2"
+        android:textColor="#FFFFFF"
+        android:textSize="10sp"
+        android:onClick="takeTurn"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+    <TextView
+        android:id="@+id/red3"
+        android:layout_width="15dp"
+        android:layout_height="16dp"
+        android:background="#990000"
+        android:text="r3"
+        android:textColor="#FFFFFF"
+        android:textSize="10sp"
+        android:onClick="takeTurn"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+    <!-- GREEN -->
+    <TextView
+        android:id="@+id/green0"
+        android:layout_width="15dp"
+        android:layout_height="16dp"
+        android:background="#009900"
+        android:text="g0"
+        android:textColor="#FFFFFF"
+        android:textSize="10sp"
+        android:onClick="takeTurn"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+    <TextView
+        android:id="@+id/green1"
+        android:layout_width="15dp"
+        android:layout_height="16dp"
+        android:background="#009900"
+        android:text="g1"
+        android:textColor="#FFFFFF"
+        android:textSize="10sp"
+        android:onClick="takeTurn"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+    <TextView
+        android:id="@+id/green2"
+        android:layout_width="15dp"
+        android:layout_height="16dp"
+        android:background="#009900"
+        android:text="g2"
+        android:textColor="#FFFFFF"
+        android:textSize="10sp"
+        android:onClick="takeTurn"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+    <TextView
+        android:id="@+id/green3"
+        android:layout_width="15dp"
+        android:layout_height="16dp"
+        android:background="#009900"
+        android:text="g3"
+        android:textColor="#FFFFFF"
+        android:textSize="10sp"
+        android:onClick="takeTurn"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+    <!-- YELLOW -->
+    <TextView
+        android:id="@+id/yellow0"
+        android:layout_width="15dp"
+        android:layout_height="16dp"
+        android:background="#999900"
+        android:text="y0"
+        android:textColor="#FFFFFF"
+        android:textSize="10sp"
+        android:onClick="takeTurn"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+    <TextView
+        android:id="@+id/yellow1"
+        android:layout_width="15dp"
+        android:layout_height="16dp"
+        android:background="#999900"
+        android:text="y1"
+        android:textColor="#FFFFFF"
+        android:textSize="10sp"
+        android:onClick="takeTurn"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+    <TextView
+        android:id="@+id/yellow2"
+        android:layout_width="15dp"
+        android:layout_height="16dp"
+        android:background="#999900"
+        android:text="y2"
+        android:textColor="#FFFFFF"
+        android:textSize="10sp"
+        android:onClick="takeTurn"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+    <TextView
+        android:id="@+id/yellow3"
+        android:layout_width="15dp"
+        android:layout_height="16dp"
+        android:background="#999900"
+        android:text="y3"
+        android:textColor="#FFFFFF"
+        android:textSize="10sp"
+        android:onClick="takeTurn"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+    <CheckBox
+        android:id="@+id/redPlaying"
+        android:layout_width="30dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="68dp"
+        android:layout_marginTop="176dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/greenPlaying" />
+
+    <CheckBox
+        android:id="@+id/bluePlaying"
+        android:layout_width="30dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="164dp"
+        android:layout_marginBottom="92dp"
+        app:layout_constraintBottom_toBottomOf="@+id/testBox"
+        app:layout_constraintStart_toEndOf="@+id/redPlaying" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
